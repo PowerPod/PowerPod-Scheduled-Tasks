@@ -48,28 +48,23 @@ async function mintPT() {
 
   for (const row of docs) {
     const { id, address, amount } = row
-    console.log(`Minting ${amount} PT to ${address} with id ${id}`)
+    console.log(`Minting PT with ${amount} Energy to ${address} with id ${id}`)
 
     const success = await mintPoints(address, amount, id)
 
     if (success) {
-      // TODO: inform the order server that the minting is successful
-      //   const response = await axios.put(
-      //     `${process.env.CLOUD_RUN_URL}/api/transactions/${billId}`,
-      //     {
-      //       amount: formatTokenAmount(amount),
-      //       payStatus: 'success',
-      //       payTime: blockTimestamp.toString(),
-      //       receiver: receiver.toString(),
-      //       txHash: transactionHash.toString(),
-      //       sharedUserAward: pt.toString(),
-      //       chargeUserAward: pt.toString(),
-      //     }
-      //   )
-      //   console.log('Server Response:', response.data)
-      //   if (response.data.code === '0') {
-      //     await updateMintPTOrder(id, { status: 'success' })
-      //   }
+      // inform the order server that the minting is successful
+      const response = await axios.put(
+        `${process.env.CLOUD_RUN_URL}/api/exchange-orders/${id}`,
+        {
+          pt: (Number(amount) * 1000).toString(),
+          status: 'success',
+        }
+      )
+      console.log('Server Response:', response.data)
+      if (response.data.code === '0') {
+        await updateMintPTOrder(id, { status: 'success' })
+      }
     }
   }
 }
