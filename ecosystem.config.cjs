@@ -11,10 +11,10 @@ module.exports = {
     {
       name: 'CronMintPT',
       script: './functions/mintPT.js',
-      watch: true,
-      autorestart: true,
+      // watch: true,
+      autorestart: false,
       max_memory_restart: '300M',
-      cron_restart: '*/5 * * * *',
+      cron_restart: '*/1 * * * *',
     },
   ],
 }
